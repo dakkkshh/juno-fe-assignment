@@ -1,0 +1,19 @@
+{
+  "files": {
+    "main.css": "/juno-fe-assignment/static/css/main.05158c43.css",
+    "main.js": "/juno-fe-assignment/static/js/main.88872a8a.js",
+    "static/js/787.e9dd177b.chunk.js": "/juno-fe-assignment/static/js/787.e9dd177b.chunk.js",
+    "static/media/Inter-Medium.ttf": "/juno-fe-assignment/static/media/Inter-Medium.3f7acfe50aad7ad68548.ttf",
+    "static/media/Inter-Light.ttf": "/juno-fe-assignment/static/media/Inter-Light.02850f28027788580733.ttf",
+    "static/media/Inter-Regular.ttf": "/juno-fe-assignment/static/media/Inter-Regular.9ca9ba81e9dcaa12b3a1.ttf",
+    "static/media/logo.png": "/juno-fe-assignment/static/media/logo.55f6a92e8e57e7c9d365.png",
+    "index.html": "/juno-fe-assignment/index.html",
+    "main.05158c43.css.map": "/juno-fe-assignment/static/css/main.05158c43.css.map",
+    "main.88872a8a.js.map": "/juno-fe-assignment/static/js/main.88872a8a.js.map",
+    "787.e9dd177b.chunk.js.map": "/juno-fe-assignment/static/js/787.e9dd177b.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.05158c43.css",
+    "static/js/main.88872a8a.js"
+  ]
+}
