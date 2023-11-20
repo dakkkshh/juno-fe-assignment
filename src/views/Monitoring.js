@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CloseAccountButton from "../components/buttons/CloseAccount";
 import PrimaryButton from "../components/buttons/Primary";
 import SearchBar from "../components/input/Searchbar";
@@ -99,7 +99,7 @@ export default function Monitoring() {
             riskLevel: "Low",
             triggerReason: "IP Change",
             inQueueFor: 4,
-            dateAddedOn: "2023-10-12",
+            dateAddedOn: "2023-1-12",
             previouslyReviewed: {
               date: "2023-10-12",
               reviewd: true,
@@ -115,7 +115,7 @@ export default function Monitoring() {
             inQueueFor: 4,
             dateAddedOn: "2023-10-12",
             previouslyReviewed: {
-              date: "2023-10-12",
+              date: "2023-12-10",
               reviewd: false,
             },
           },
@@ -169,7 +169,7 @@ export default function Monitoring() {
             riskLevel: "Low",
             triggerReason: "FIFO",
             inQueueFor: 4,
-            dateAddedOn: "2023-10-12",
+            dateAddedOn: "2022-10-19",
             previouslyReviewed: {
               date: "2023-10-12",
               reviewd: true,
@@ -244,7 +244,7 @@ export default function Monitoring() {
             riskLevel: "Medium",
             actionReason: "Flagged",
             timeToClose: 14,
-            dateAddedOn: "2023-10-12",
+            dateAddedOn: "2023-10-9",
             actionTakenBy: {
               name: "Neil",
               email: "neil@onjuno.com",
@@ -272,7 +272,7 @@ export default function Monitoring() {
             riskLevel: "Low",
             actionReason: "Closed",
             timeToClose: 14,
-            dateAddedOn: "2023-10-12",
+            dateAddedOn: "2023-10-17",
             actionTakenBy: {
               name: "Neil",
               email: "neil@onjuno.com",
@@ -286,7 +286,7 @@ export default function Monitoring() {
             riskLevel: "High",
             actionReason: "Flagged",
             timeToClose: 15,
-            dateAddedOn: "2023-10-12",
+            dateAddedOn: "2023-6-12",
             actionTakenBy: {
               name: "Neil",
               email: "neil@onjuno.com",
@@ -314,7 +314,7 @@ export default function Monitoring() {
             riskLevel: "Low",
             actionReason: "SOI requested",
             timeToClose: 15,
-            dateAddedOn: "2023-10-12",
+            dateAddedOn: "2023-3-12",
             actionTakenBy: {
               name: "Neil",
               email: "neil@onjuno.com",
@@ -326,6 +326,8 @@ export default function Monitoring() {
   ];
   const [selectedDataOption, setSelectedDataOption] = useState(dataOptions[0]);
   const [closeAccountModalOpen, setCloseAccountModalOpen] = useState(false);
+  const [selectedRiskLevel, setSelectedRiskLevel] = useState("");
+  const [selectedTriggerReason, setSelectedTriggerReason] = useState("");
   const [closeAccountDetails, setCloseAccountDetails] = useState(
     initialAccountClosureDetails
   );
@@ -380,52 +382,12 @@ export default function Monitoring() {
 
   function handleRiskLevelOptionChange(e) {
     const selectedRiskLevel = e.target.value;
-    const selectedDataId = selectedDataOption.id;
-    if (selectedRiskLevel === "") {
-      setSelectedDataOption({
-        ...selectedDataOption,
-        data: {
-          ...selectedDataOption.data,
-          rows: dataOptions[selectedDataId - 1].data.rows,
-        },
-      });
-      return;
-    }
-    const updatedData = dataOptions[selectedDataId - 1].data.rows.filter(
-      (row) => row.riskLevel === selectedRiskLevel
-    );
-    setSelectedDataOption({
-      ...selectedDataOption,
-      data: {
-        ...selectedDataOption.data,
-        rows: updatedData,
-      },
-    });
+    setSelectedRiskLevel(selectedRiskLevel);
   }
 
   function handleTriggerReasonOptionChange(e) {
     const selectedTriggerReason = e.target.value;
-    const selectedDataId = selectedDataOption.id;
-    if (selectedTriggerReason === "") {
-      setSelectedDataOption({
-        ...selectedDataOption,
-        data: {
-          ...selectedDataOption.data,
-          rows: dataOptions[selectedDataId - 1].data.rows,
-        },
-      });
-      return;
-    }
-    const updatedData = dataOptions[selectedDataId - 1].data.rows.filter(
-      (row) => row.triggerReason === selectedTriggerReason
-    );
-    setSelectedDataOption({
-      ...selectedDataOption,
-      data: {
-        ...selectedDataOption.data,
-        rows: updatedData,
-      },
-    });
+    setSelectedTriggerReason(selectedTriggerReason);
   }
 
   function handleSearchChange(e) {
@@ -441,7 +403,7 @@ export default function Monitoring() {
       });
       return;
     }
-    const updatedData = dataOptions[selectedDataId - 1].data.rows.filter(
+    const updatedData = selectedDataOption.data.rows.filter(
       (row) =>
         row.user.name.toLowerCase().includes(searchVal.toLowerCase()) ||
         row.user.email.toLowerCase().includes(searchVal.toLowerCase())
@@ -550,6 +512,7 @@ export default function Monitoring() {
           )}
         </div>
         <Select
+          value={closeAccountDetails.reason}
           label="Reason"
           className="mb-4"
           selectClassName="bg-white w-full"
@@ -603,6 +566,38 @@ export default function Monitoring() {
     );
   }
 
+  useEffect(() => {
+    function handleRiskAndTriggerFilter(){
+      const selectedDataId = selectedDataOption.id;
+      let updatedData = [];
+      if (selectedRiskLevel === "" && selectedTriggerReason === "") {
+        updatedData = dataOptions[selectedDataId - 1].data.rows;
+      } else if (selectedRiskLevel === "") {
+        updatedData = dataOptions[selectedDataId - 1].data.rows.filter(
+          (row) => row.triggerReason === selectedTriggerReason
+        );
+      } else if (selectedTriggerReason === "") {
+        updatedData = dataOptions[selectedDataId - 1].data.rows.filter(
+          (row) => row.riskLevel === selectedRiskLevel
+        );
+      } else {
+        updatedData = dataOptions[selectedDataId - 1].data.rows.filter(
+          (row) =>
+            row.riskLevel === selectedRiskLevel &&
+            row.triggerReason === selectedTriggerReason
+        );
+      }
+      setSelectedDataOption({
+        ...selectedDataOption,
+        data: {
+          ...selectedDataOption.data,
+          rows: updatedData,
+        },
+      });
+    }
+    handleRiskAndTriggerFilter();
+  }, [selectedRiskLevel, selectedTriggerReason]);
+
   return (
     <div>
       <h1>Monitoring</h1>
@@ -615,7 +610,11 @@ export default function Monitoring() {
                 ? "border-solid border-primary border-b-2"
                 : ""
             }`}
-            onClick={() => setSelectedDataOption(dataOption)}
+            onClick={() => {
+              setSelectedDataOption(dataOption);
+              setSelectedRiskLevel("");
+              setSelectedTriggerReason("");
+            }}
           >
             <h4
               className={`${
@@ -639,11 +638,13 @@ export default function Monitoring() {
           onChange={handleSearchChange}
         />
         <Select
+          value={selectedTriggerReason}
           placeholder="Trigger Reason"
           options={triggerReasonOptions}
           onChange={handleTriggerReasonOptionChange}
         />
         <Select
+          value={selectedRiskLevel}
           placeholder="Risk Level"
           options={riskLevelOptions}
           onChange={handleRiskLevelOptionChange}
